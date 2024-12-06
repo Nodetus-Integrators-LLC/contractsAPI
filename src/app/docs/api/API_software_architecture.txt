@@ -1,0 +1,145 @@
+"""
+Key Directory Purposes:
+
+1. api/
+   Purpose: Interface layer that handles HTTP requests/responses
+   Contains: Route definitions, request handling, input validation
+   Example: API endpoints for CRUD operations
+---------------------------------------------------------------------------------
+# api/v1/endpoints/market_research.py
+# This is like the "front desk" of your department
+# It receives requests and directs them to the right person
+
+@router.get("/market-research/{vendor_id}")
+async def get_vendor_research(vendor_id: str):
+    # This is like someone coming to the front desk asking about a vendor
+    # We don't do the work here - we pass it to the right service
+    research = await market_research_service.analyze_vendor(vendor_id)
+    return research
+
+
+
+2. core/a
+   Purpose: Essential application setup and configuration
+   Contains: Settings, security, startup events, global exception handlers
+   Example: Database connection configuration, authentication setup
+---------------------------------------------------------------------------------
+# core/config.py
+# This has your department's basic setup
+# Like office policies and procedures
+
+class Settings(BaseSettings):
+    DATABASE_URL: str  # Where our files are stored
+    API_KEY: str      # Who's allowed to ask us for information
+    CACHE_TTL: int    # How long we keep frequent answers ready
+
+
+3. models/
+   Purpose: Database structure definitions
+   Contains: ORM models, table definitions
+   Example: SQLAlchemy or other ORM models
+---------------------------------------------------------------------------------
+# models/vendor.py
+# This defines what information we store
+# Like designing the fields in your filing system
+
+class Vendor(Base):
+    __tablename__ = "vendors"
+    
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    registration_date = Column(Date)
+    past_performance = Column(JSONB)  # Stores detailed performance data
+
+4. schemas/
+   Purpose: Data validation and serialization
+   Contains: Request/response models, validation rules
+   Example: Pydantic models for input/output
+
+5. services/
+   Purpose: Business logic implementation
+   Contains: Core functionality, processing, calculations
+   Example: Data processing, business rules, external integrations
+---------------------------------------------------------------------------------
+# services/market_research.py
+# This is where the actual work happens
+# Like analysts in your department doing research
+
+class MarketResearchService:
+    def __init__(self, db: Database):
+        self.db = db  # Our filing system
+
+    async def analyze_vendor(self, vendor_id: str):
+        # Get vendor history from our files
+        vendor_data = await self.db.get_vendor(vendor_id)
+        
+        # Analyze their past performance
+        performance = self._analyze_performance(vendor_data)
+        
+        # Check their financial health
+        financials = await self._check_financial_status(vendor_id)
+        
+        return {
+            "vendor_id": vendor_id,
+            "performance": performance,
+            "financial_health": financials
+        }
+
+6. utils/
+   Purpose: Shared utility functions
+   Contains: Helper functions, common operations
+   Example: Date formatting, string manipulation, common calculations
+
+Expansion Points:
+- Add new domains under api/v1/endpoints/
+- Add corresponding models/schemas/services for new domains
+- Add new utility modules as needed
+- Expand test coverage following the same structure
+
+Best Practices:
+- Keep endpoints thin, move logic to services
+- Group related functionality by domain
+- Use dependency injection for services
+- Maintain consistent error handling
+- Document all public interfaces
+
+=========================================================================
+FLOW:
+# 1. Someone makes a request for vendor research
+GET /api/v1/market-research/vendor123
+
+# 2. The API (front desk) receives it
+@router.get("/market-research/{vendor_id}")
+async def get_vendor_research(
+    vendor_id: str,
+    service: MarketResearchService = Depends(get_service)
+):
+    return await service.analyze_vendor(vendor_id)
+
+# 3. The Service (analysts) does the work
+class MarketResearchService:
+    async def analyze_vendor(self, vendor_id):
+        # Get data from our database
+        vendor = await self.db.get_vendor(vendor_id)
+        
+        # Do analysis
+        risk_score = self._calculate_risk(vendor)
+        market_position = await self._analyze_market_position(vendor)
+        
+        # Return results
+        return VendorAnalysis(
+            risk_score=risk_score,
+            market_position=market_position
+        )
+
+# 4. The Models (filing system) store the data
+class VendorAnalysis(BaseModel):
+    risk_score: float
+    market_position: str
+    
+class Vendor(SQLModel):
+    id: str
+    name: str
+    contracts: List[Contract]
+
+"""

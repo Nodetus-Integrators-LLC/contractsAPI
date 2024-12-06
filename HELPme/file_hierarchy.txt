@@ -1,0 +1,63 @@
+﻿service-name/
+├── app/
+│   ├── api/                    # API layer
+│   │   ├── v1/                # API version grouping
+│   │   │   ├── endpoints/     # Route handlers grouped by domain
+│   │   │   │   ├── domain1.py
+│   │   │   │   └── domain2.py
+│   │   │   └── router.py      # Combines all endpoint routers
+│   │   └── deps.py            # Shared API dependencies
+│   │
+│   ├── core/                  # Core application components
+│   │   ├── config.py          # Configuration management
+│   │   ├── security.py        # Authentication/authorization
+│   │   ├── events.py          # Application events (startup/shutdown)
+│   │   └── exceptions.py      # Custom exception definitions
+│   │
+│   ├── models/               # Database models
+│   │   ├── domain1/         # Models grouped by domain
+│   │   │   ├── model1.py
+│   │   │   └── model2.py
+│   │   └── common/          # Shared models
+│   │       └── base.py      # Base model classes
+│   │
+│   ├── schemas/             # Data validation schemas
+│   │   ├── domain1/        # Schemas grouped by domain
+│   │   │   ├── requests.py   # Request validation
+│   │   │   └── responses.py  # Response formatting
+│   │   └── common/         # Shared schemas
+│   │       └── base.py     # Base schema classes
+│   │
+│   ├── services/           # Business logic layer
+│   │   ├── domain1/       # Services grouped by domain
+│   │   │   ├── service1.py
+│   │   │   └── service2.py
+│   │   └── common/        # Shared services
+│   │       └── base.py    # Base service classes
+│   │
+│   └── utils/             # Utility functions and helpers
+│       ├── db/           # Database utilities
+│       │   ├── session.py
+│       │   └── base.py
+│       └── helpers/      # General helper functions
+│           ├── formatting.py
+│           └── validation.py
+│
+├── tests/                # Test suite
+│   ├── api/             # API tests
+│   │   └── v1/
+│   │       └── test_domain1.py
+│   ├── services/        # Service layer tests
+│   │   └── test_service1.py
+│   └── conftest.py      # Test configurations
+│
+├── scripts/             # Operational scripts
+│   ├── db/             # Database management
+│   │   ├── migrations/
+│   │   └── seeds/
+│   └── deploy/         # Deployment configurations
+│       └── kubernetes/
+│
+└── docs/               # Documentation
+    ├── api/           # API documentation
+    └── architecture/  # Architecture documentation
